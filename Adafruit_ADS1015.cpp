@@ -24,9 +24,10 @@
  #include "WProgram.h"
 #endif
 
-#include <Wire.h>
-
 #include "Adafruit_ADS1015.h"
+
+#include <SoftWire.h>
+SoftWire Wire( 0, 0 );
 
 /**************************************************************************/
 /*!
@@ -85,12 +86,14 @@ static uint16_t readRegister(uint8_t i2cAddress, uint8_t reg) {
     @brief  Instantiates a new ADS1015 class w/appropriate properties
 */
 /**************************************************************************/
-Adafruit_ADS1015::Adafruit_ADS1015(uint8_t i2cAddress) 
+Adafruit_ADS1015::Adafruit_ADS1015(uint8_t i2cAddress, uint8_t pinSDA, uint8_t pinSCL)
 {
    m_i2cAddress = i2cAddress;
    m_conversionDelay = ADS1015_CONVERSIONDELAY;
    m_bitShift = 4;
    m_gain = GAIN_TWOTHIRDS; /* +/- 6.144V range (limited to VDD +0.3V max!) */
+   Wire.setSda(pinSDA);
+   Wire.setScl(pinSCL);
 }
 
 /**************************************************************************/
@@ -98,12 +101,14 @@ Adafruit_ADS1015::Adafruit_ADS1015(uint8_t i2cAddress)
     @brief  Instantiates a new ADS1115 class w/appropriate properties
 */
 /**************************************************************************/
-Adafruit_ADS1115::Adafruit_ADS1115(uint8_t i2cAddress)
+Adafruit_ADS1115::Adafruit_ADS1115(uint8_t i2cAddress, uint8_t pinSDA, uint8_t pinSCL)
 {
    m_i2cAddress = i2cAddress;
    m_conversionDelay = ADS1115_CONVERSIONDELAY;
    m_bitShift = 0;
    m_gain = GAIN_TWOTHIRDS; /* +/- 6.144V range (limited to VDD +0.3V max!) */
+   Wire.setSda(pinSDA);
+   Wire.setScl(pinSCL);
 }
 
 /**************************************************************************/

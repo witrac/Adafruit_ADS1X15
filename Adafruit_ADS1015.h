@@ -24,8 +24,7 @@
  #include "WProgram.h"
 #endif
 
-#include <Wire.h>
-
+#include <SoftWire.h>
 /*=========================================================================
     I2C ADDRESS/BITS
     -----------------------------------------------------------------------*/
@@ -127,7 +126,7 @@ protected:
    adsGain_t m_gain;
 
  public:
-  Adafruit_ADS1015(uint8_t i2cAddress = ADS1015_ADDRESS);
+  Adafruit_ADS1015(uint8_t i2cAddress = ADS1015_ADDRESS, uint8_t pinSDA,  uint8_t pinSCL);
   void begin(void);
   uint16_t  readADC_SingleEnded(uint8_t channel);
   int16_t   readADC_Differential_0_1(void);
@@ -144,7 +143,7 @@ protected:
 class Adafruit_ADS1115 : public Adafruit_ADS1015
 {
  public:
-  Adafruit_ADS1115(uint8_t i2cAddress = ADS1015_ADDRESS);
+  Adafruit_ADS1115(uint8_t i2cAddress = ADS1015_ADDRESS, uint8_t pinSDA,  uint8_t pinSCL);
 
  private:
 };
