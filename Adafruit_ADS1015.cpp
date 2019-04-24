@@ -27,31 +27,31 @@
 #include "Adafruit_ADS1015.h"
 
 #include <SoftWire.h>
-SoftWire Wire( 0, 0 );
+SoftWire Wire1( 0, 0 );
 
 /**************************************************************************/
 /*!
-    @brief  Abstract away platform differences in Arduino wire library
+    @brief  Abstract away platform differences in Arduino SoftWire library
 */
 /**************************************************************************/
 static uint8_t i2cread(void) {
   #if ARDUINO >= 100
-  return Wire.read();
+  return Wire1.read();
   #else
-  return Wire.receive();
+  return Wire1.receive();
   #endif
 }
 
 /**************************************************************************/
 /*!
-    @brief  Abstract away platform differences in Arduino wire library
+    @brief  Abstract away platform differences in Arduino SoftWire library
 */
 /**************************************************************************/
 static void i2cwrite(uint8_t x) {
   #if ARDUINO >= 100
-  Wire.write((uint8_t)x);
+  Wire1.write((uint8_t)x);
   #else
-  Wire.send(x);
+  Wire1.send(x);
   #endif
 }
 
@@ -61,11 +61,11 @@ static void i2cwrite(uint8_t x) {
 */
 /**************************************************************************/
 static void writeRegister(uint8_t i2cAddress, uint8_t reg, uint16_t value) {
-  Wire.beginTransmission(i2cAddress);
+  Wire1.beginTransmission(i2cAddress);
   i2cwrite((uint8_t)reg);
   i2cwrite((uint8_t)(value>>8));
   i2cwrite((uint8_t)(value & 0xFF));
-  Wire.endTransmission();
+  Wire1.endTransmission();
 }
 
 /**************************************************************************/
@@ -73,12 +73,12 @@ static void writeRegister(uint8_t i2cAddress, uint8_t reg, uint16_t value) {
     @brief  Writes 16-bits to the specified destination register
 */
 /**************************************************************************/
-static uint16_t readRegister(uint8_t i2cAddress, uint8_t reg) {
-  Wire.beginTransmission(i2cAddress);
+static uint16_t readRegister(uint8_t i2cAddress, uint8_t reg ) {
+  Wire1.beginTransmission(i2cAddress);
   i2cwrite(ADS1015_REG_POINTER_CONVERT);
-  Wire.endTransmission();
-  Wire.requestFrom(i2cAddress, (uint8_t)2);
-  return ((i2cread() << 8) | i2cread());  
+  Wire1.endTransmission();
+  Wire1.requestFrom(i2cAddress, (uint8_t)2);
+  return ((i2cread() << 8) | i2cread());
 }
 
 /**************************************************************************/
@@ -92,8 +92,13 @@ Adafruit_ADS1015::Adafruit_ADS1015(uint8_t i2cAddress, uint8_t pinSDA, uint8_t p
    m_conversionDelay = ADS1015_CONVERSIONDELAY;
    m_bitShift = 4;
    m_gain = GAIN_TWOTHIRDS; /* +/- 6.144V range (limited to VDD +0.3V max!) */
-   Wire.setSda(pinSDA);
-   Wire.setScl(pinSCL);
+   Wire1.setSda( pinSDA );
+   Wire1.setScl( pinSCL );
+   Wire1.setDelay_us( 5 );
+   Wire1.setRxBuffer(I2C_buffer, sizeof(I2C_buffer));
+   Wire1.setTxBuffer(I2C_buffer, sizeof(I2C_buffer));
+   Wire1.setClock( 400000 );
+   Wire1.begin();
 }
 
 /**************************************************************************/
@@ -107,18 +112,10 @@ Adafruit_ADS1115::Adafruit_ADS1115(uint8_t i2cAddress, uint8_t pinSDA, uint8_t p
    m_conversionDelay = ADS1115_CONVERSIONDELAY;
    m_bitShift = 0;
    m_gain = GAIN_TWOTHIRDS; /* +/- 6.144V range (limited to VDD +0.3V max!) */
-   Wire.setSda(pinSDA);
-   Wire.setScl(pinSCL);
+   Wire1.setSda( pinSDA );
+   Wire1.setScl( pinSCL );
 }
 
-/**************************************************************************/
-/*!
-    @brief  Sets up the HW (reads coefficients values, etc.)
-*/
-/**************************************************************************/
-void Adafruit_ADS1015::begin() {
-  Wire.begin();
-}
 
 /**************************************************************************/
 /*!
@@ -156,7 +153,7 @@ uint16_t Adafruit_ADS1015::readADC_SingleEnded(uint8_t channel) {
                     ADS1015_REG_CONFIG_CLAT_NONLAT  | // Non-latching (default val)
                     ADS1015_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
                     ADS1015_REG_CONFIG_CMODE_TRAD   | // Traditional comparator (default val)
-                    ADS1015_REG_CONFIG_DR_1600SPS   | // 1600 samples per second (default)
+                    ADS1015_REG_CONFIG_DR_3300SPS   | // 3300 samples per second
                     ADS1015_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
 
   // Set PGA/voltage range
