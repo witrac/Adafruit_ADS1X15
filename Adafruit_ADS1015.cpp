@@ -27,7 +27,7 @@
 #include "Adafruit_ADS1015.h"
 
 #include <SoftWire.h>
-SoftWire Wire1( 0, 0 );
+SoftWire Wire2( 0, 0 );
 
 /**************************************************************************/
 /*!
@@ -36,9 +36,9 @@ SoftWire Wire1( 0, 0 );
 /**************************************************************************/
 static uint8_t i2cread(void) {
   #if ARDUINO >= 100
-  return Wire1.read();
+  return Wire2.read();
   #else
-  return Wire1.receive();
+  return Wire2.receive();
   #endif
 }
 
@@ -49,9 +49,9 @@ static uint8_t i2cread(void) {
 /**************************************************************************/
 static void i2cwrite(uint8_t x) {
   #if ARDUINO >= 100
-  Wire1.write((uint8_t)x);
+  Wire2.write((uint8_t)x);
   #else
-  Wire1.send(x);
+  Wire2.send(x);
   #endif
 }
 
@@ -61,11 +61,11 @@ static void i2cwrite(uint8_t x) {
 */
 /**************************************************************************/
 static void writeRegister(uint8_t i2cAddress, uint8_t reg, uint16_t value) {
-  Wire1.beginTransmission(i2cAddress);
+  Wire2.beginTransmission(i2cAddress);
   i2cwrite((uint8_t)reg);
   i2cwrite((uint8_t)(value>>8));
   i2cwrite((uint8_t)(value & 0xFF));
-  Wire1.endTransmission();
+  Wire2.endTransmission();
 }
 
 /**************************************************************************/
@@ -74,10 +74,10 @@ static void writeRegister(uint8_t i2cAddress, uint8_t reg, uint16_t value) {
 */
 /**************************************************************************/
 static uint16_t readRegister(uint8_t i2cAddress, uint8_t reg ) {
-  Wire1.beginTransmission(i2cAddress);
+  Wire2.beginTransmission(i2cAddress);
   i2cwrite(ADS1015_REG_POINTER_CONVERT);
-  Wire1.endTransmission();
-  Wire1.requestFrom(i2cAddress, (uint8_t)2);
+  Wire2.endTransmission();
+  Wire2.requestFrom(i2cAddress, (uint8_t)2);
   return ((i2cread() << 8) | i2cread());
 }
 
@@ -92,13 +92,13 @@ Adafruit_ADS1015::Adafruit_ADS1015(uint8_t i2cAddress, uint8_t pinSDA, uint8_t p
    m_conversionDelay = ADS1015_CONVERSIONDELAY;
    m_bitShift = 4;
    m_gain = GAIN_TWOTHIRDS; /* +/- 6.144V range (limited to VDD +0.3V max!) */
-   Wire1.setSda( pinSDA );
-   Wire1.setScl( pinSCL );
-   Wire1.setDelay_us( 5 );
-   Wire1.setRxBuffer(I2C_buffer, sizeof(I2C_buffer));
-   Wire1.setTxBuffer(I2C_buffer, sizeof(I2C_buffer));
-   Wire1.setClock( 400000 );
-   Wire1.begin();
+   Wire2.setSda( pinSDA );
+   Wire2.setScl( pinSCL );
+   Wire2.setDelay_us( 5 );
+   Wire2.setRxBuffer(I2C_buffer, sizeof(I2C_buffer));
+   Wire2.setTxBuffer(I2C_buffer, sizeof(I2C_buffer));
+   Wire2.setClock( 400000 );
+   Wire2.begin();
 }
 
 /**************************************************************************/
@@ -112,8 +112,8 @@ Adafruit_ADS1115::Adafruit_ADS1115(uint8_t i2cAddress, uint8_t pinSDA, uint8_t p
    m_conversionDelay = ADS1115_CONVERSIONDELAY;
    m_bitShift = 0;
    m_gain = GAIN_TWOTHIRDS; /* +/- 6.144V range (limited to VDD +0.3V max!) */
-   Wire1.setSda( pinSDA );
-   Wire1.setScl( pinSCL );
+   Wire2.setSda( pinSDA );
+   Wire2.setScl( pinSCL );
 }
 
 
