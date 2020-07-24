@@ -1,10 +1,10 @@
-#include <SoftWire.h>
 #include <Adafruit_ADS1015.h>
 
 uint8_t pinSDA = A4;
 uint8_t pinSCL = A5;
 // Adafruit_ADS1115 ads( 0x48, pinSDA, pinSCL );  /* Use this for the 16-bit version */
 Adafruit_ADS1015 ads( 0x48, pinSDA, pinSCL );     /* Use thi for the 12-bit version */
+// Adafruit_ADS1015 ads( 0x48 );                  /* Use this for the 12-bit version and i2c_HW */
 
 void setup(void)
 {

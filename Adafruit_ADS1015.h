@@ -24,7 +24,6 @@
  #include "WProgram.h"
 #endif
 
-#include <SoftWire.h>
 /*=========================================================================
     I2C ADDRESS/BITS
     -----------------------------------------------------------------------*/
@@ -124,17 +123,21 @@ protected:
    uint8_t   m_conversionDelay;
    uint8_t   m_bitShift;
    adsGain_t m_gain;
-   uint8_t I2C_buffer [34];
+   uint8_t   I2C_buffer [34];
+   uint8_t   pin_SDA;
+   uint8_t   pin_SCL;
 
  public:
-  Adafruit_ADS1015(uint8_t i2cAddress = ADS1015_ADDRESS, uint8_t pinSDA = A4,  uint8_t pinSCL = A5);
-  uint16_t  readADC_SingleEnded(uint8_t channel);
-  int16_t   readADC_Differential_0_1(void);
-  int16_t   readADC_Differential_2_3(void);
-  void      startComparator_SingleEnded(uint8_t channel, int16_t threshold);
-  int16_t   getLastConversionResults();
-  void      setGain(adsGain_t gain);
-  adsGain_t getGain(void);
+  Adafruit_ADS1015( const uint8_t i2cAddress = ADS1015_ADDRESS, const uint8_t pinSDA = 0, const uint8_t pinSCL = 0 );
+  void      writeRegister( uint8_t i2cAddress, uint8_t reg, uint16_t value );
+  uint16_t  readRegister( uint8_t i2cAddress, uint8_t reg );
+  uint16_t  readADC_SingleEnded( uint8_t channel );
+  int16_t   readADC_Differential_0_1( void );
+  int16_t   readADC_Differential_2_3( void );
+  void      startComparator_SingleEnded( uint8_t channel, int16_t threshold );
+  int16_t   getLastConversionResults( void );
+  void      setGain( adsGain_t gain );
+  adsGain_t getGain( void );
 
  private:
 };
@@ -143,7 +146,7 @@ protected:
 class Adafruit_ADS1115 : public Adafruit_ADS1015
 {
  public:
-  Adafruit_ADS1115(uint8_t i2cAddress, uint8_t pinSDA,  uint8_t pinSCL);
+  Adafruit_ADS1115( const uint8_t i2cAddress = ADS1015_ADDRESS, const uint8_t pinSDA = 0, const uint8_t pinSCL = 0 );
 
  private:
 };
